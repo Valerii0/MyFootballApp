@@ -30,6 +30,8 @@ class StandingsTableViewController: UITableViewController {
 
     private var listOfImagesForTeamWithSections = [[UIView]]()
 
+    var viewForActivityIndicator: UIView!
+
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -39,6 +41,9 @@ class StandingsTableViewController: UITableViewController {
     }
 
     private func setUpUI() {
+        tableView.tableFooterView = UIView()
+        viewForActivityIndicator = startLoader()
+        
         tableView.register(UINib(nibName: Constants.LeagueStandingForTeamTableViewCell, bundle: nil),
                            forHeaderFooterViewReuseIdentifier: Constants.LeagueStandingForTeamTableViewCell)
 
@@ -69,6 +74,7 @@ class StandingsTableViewController: UITableViewController {
             DispatchQueue.main.async {
                 self.tableView.reloadData()
             }
+            self.stopLoader(viewForRemove: self.viewForActivityIndicator)
         })
 
     }

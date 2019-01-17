@@ -40,8 +40,9 @@ class LoginViewController: UIViewController {
     func loadTeamsFromFireBaseToRealm(user: User) {
         let newTeamRef = Database.database().reference().child("Users").child(user.uid)
         newTeamRef.observeSingleEvent(of: .value, with: { snapshot in
-            let postDict = snapshot.value as! [String : AnyObject]
-            let teams = postDict["Teams"] as! [String : AnyObject]
+            guard let postDict = snapshot.value as? [String : AnyObject],
+                let teams = postDict["Teams"] as? [String : AnyObject]
+                else { return }
             for team in teams {
                 guard let id = team.value["Team Id"] as? String,
                     let name = team.value["Team Name"] as? String

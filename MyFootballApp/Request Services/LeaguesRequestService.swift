@@ -10,29 +10,27 @@ import Foundation
 
 class LeaguesRequestService {
 
-    //static let shared = LeaguesRequestService()
+    func getLeagues(callBack: @escaping (_ leagues: [League]?, _ error: Error?) -> Void) {
 
-    func getLeagues(callBack: @escaping (_ leagues: [League]) -> Void) {
-
-        var urlString = AppConstants.urlString
-        urlString.append(AppConstants.competitions)
+        var urlString = AppConstants.RequestsConstants.urlString
+        urlString.append(AppConstants.RequestsConstants.competitions)
 
         var urlComponents = URLComponents(string: urlString)
         urlComponents?.queryItems = [
-            URLQueryItem(name: AppConstants.planName, value: AppConstants.planValue)
+            URLQueryItem(name: AppConstants.RequestsConstants.planName, value: AppConstants.RequestsConstants.planValue)
         ]
 
         var request = URLRequest(url: (urlComponents?.url)!)
-        //request.httpMethod = "GET"
-        request.setValue(AppConstants.keyForFreePlanValue, forHTTPHeaderField: AppConstants.keyForFreePlanName)
+        request.setValue(AppConstants.RequestsConstants.keyForFreePlanValue, forHTTPHeaderField: AppConstants.RequestsConstants.keyForFreePlanName)
 
         let task = URLSession.shared.dataTask(with: request) { (data, response, error) in
             if let responseError = error {
                 print(responseError.localizedDescription)
+                callBack(nil, responseError)
             } else if let responseData = data {
                 do {
                     guard let json = try JSONSerialization.jsonObject(with: responseData, options: []) as? [String: Any],
-                    let leagues = json["competitions"] as? [[String: Any]]
+                        let leagues = json["competitions"] as? [[String: Any]]
                         else { return }
 
                     var listOfLeagues = [League]()
@@ -43,10 +41,11 @@ class LeaguesRequestService {
                         }
                     }
 
-                    callBack(listOfLeagues)
+                    callBack(listOfLeagues, nil)
 
                 } catch {
                     print(error.localizedDescription)
+                    callBack(nil, error)
                 }
             }
 

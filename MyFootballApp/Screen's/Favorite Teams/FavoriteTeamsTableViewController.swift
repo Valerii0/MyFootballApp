@@ -82,7 +82,9 @@ class FavoriteTeamsTableViewController: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        instantiateTeamInfoViewController(teamDB: teamsArray[indexPath.row])
+        let teamDB = TeamDB(teamId: teamsArray[indexPath.row].teamId,
+                            teamName: teamsArray[indexPath.row].teamName)
+        instantiateTeamInfoViewController(teamDB: teamDB)
     }
 
     override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
